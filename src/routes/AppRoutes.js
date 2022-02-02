@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { SingleUser } from "../views/SingleUser"
 import { Home } from "../views/Home"
+import { NotFound } from "../components/common/NotFound"
 
 export const AppRoutes = () => {
     return(
@@ -11,6 +12,7 @@ export const AppRoutes = () => {
                     <Route path=":userId" element={<SingleUser />} />
                     <Route path="new" element={<SingleUser />} />
                 </Route>
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </Router>
     )
