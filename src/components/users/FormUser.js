@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { types } from "../../redux/types"
-import { findMaxId } from "../../utils/functions"
+import { findMaxId, filterArrayById } from "../../utils/functions"
 import { FormValidateMessage } from "../common/FormValidateMessage"
 
 export const FormUser = () => {
@@ -22,22 +22,31 @@ export const FormUser = () => {
         })
     }, [dispatch])
 
-    // Handle the app if the user enter directly to the url (/user/:userId), updating the currentUserId to Redux, to retreive the user info
+    // Redirect Homa as a Callback so it doest´n affect the useEffect dependencies
+    const redirectHome = useCallback(() => {
+        navigate("/")
+    }, [navigate],)
+
+    // Prevent the app from crash if the user enter directly to the url (/user/:userId) and the user doesn´t exists
     useEffect(() => {
-        if (params.userId && !state.currentUserId){
-            dispatchData(Number(params.userId))
+        if (params.userId && !state.currentUserId && state.users.length>0){
+            if (filterArrayById(state.users,params.userId)[0]) { // Checks if there us a user in Redux with the Id
+                dispatchData(Number(params.userId)) //If exists, set the CurrentUserId in Redux
+            } else {
+                redirectHome() // If it doesn´t exists, redirect to home
+            }
         }
-    }, [state.currentUserId, params.userId, dispatchData])
+    }, [state.currentUserId, params.userId, state.users, dispatchData, redirectHome])
 
     // Redirect to Home
     const cancel = () => {
-        navigate(`/`)
+        redirectHome()
     }
 
     // If a param exists, set the user values to Formik. Otherwise, set the values empty
     const setInitialValues = () => {
         if (params.userId) {
-            return state.users.filter(user=>user.id===state.currentUserId)[0]
+            return filterArrayById(state.users,params.userId)[0]
         }
         return {
             id: findMaxId(state.users) + 1,

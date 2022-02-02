@@ -2,7 +2,7 @@ import { Button } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux"
 import { types } from "../../redux/types"
 import { useModal } from "../../hooks/useModal"
-import { filterArrayById } from "../../utils/functions"
+import { filterArrayWithoutId } from "../../utils/functions"
 import { ModalConfirm } from "./ModalConfirm"
 
 export const BtnDelete = ({id}) => {
@@ -14,7 +14,7 @@ export const BtnDelete = ({id}) => {
     const handleDelete = () => {
         dispatch({
             type: types.SET_USERS,
-            payload: {users: filterArrayById(state.users,id)}
+            payload: {users: filterArrayWithoutId(state.users,id)}
         })
     }
 
