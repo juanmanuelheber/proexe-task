@@ -1,0 +1,6 @@
+export const types = {
+  DATA_FETCHED: "DATA_FETCHED",
+  SET_USERS: "SET_USERS",
+  CURRENT_USER: "CURRENT_USER",
+};
+  
